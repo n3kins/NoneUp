@@ -66,6 +66,7 @@ window.addEventListener('load', () => {
   revealSections();
   revealTyping();
 });
+
 // Показувати кнопку при скролі
 const scrollBtn = document.getElementById("scrollTopBtn");
 
