@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Інтерактивна гра з програмування</title>
+  <link rel="icon" href="logo.webp" type="image/png">
+<style>
+:root {
+  --primary: #FF6B6B;
+  --secondary: #4ECDC4;
+  --accent: #FFE66D;
+  --dark: #292F36;
+  --light: #F7FFF7;
+}
+
+body {
+  margin: 0;
+  font-family: 'Comic Neue', cursive, Arial, sans-serif;
+  background: var(--dark);
+  color: var(--light);
+  line-height: 1.6;
+  padding: 20px;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255, 107, 107, 0.1) 0%, rgba(78, 205, 196, 0.05) 90%);
+}
+
+h2 {
+  color: var(--accent);
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-size: 2.2em;
+}
+
+.interactive-container {
+  background: rgba(41, 47, 54, 0.8);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-left: 5px solid var(--primary);
+  transition: transform 0.3s ease;
+}
+
+.interactive-container:hover {
+  transform: translateY(-5px);
+}
+
+.code-block {
+  background: #222;
+  color: #abb2bf;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 15px;
+  border: 1px solid var(--secondary);
+  font-family: 'Fira Code', monospace;
+}
+
+button {
+  background: var(--primary);
+  color: var(--dark);
+  border: none;
+  padding: 12px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+  font-size: 1.1em;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(255, 230, 109, 0.4);
+}
+
+button.secondary {
+  background: var(--secondary);
+  box-shadow: 0 4px 8px rgba(78, 205, 196, 0.3);
+}
+
+.timeline {
+  height: 120px;
+  margin: 30px 0;
+  background: linear-gradient(90deg, var(--dark), var(--secondary), var(--dark));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent);
+  z-index: 1;
+}
+
+.timeline-event {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--dark);
+}
+
+.timeline-event:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px var(--accent);
+}
+
+.timeline-event::before {
+  content: attr(data-year);
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.timeline-event::after {
+  content: attr(data-info);
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  background: var(--light);
+  color: var(--dark);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.timeline-event:hover::after {
+  opacity: 1;
+}
+
+.output-area {
+  background: #222;
+  color: var(--light);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  min-height: 50px;
+  border: 1px solid var(--secondary);
+}
+
+#theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  background: var(--dark);
+  color: var(--light);
+  border: 2px solid var(--accent);
+}
+
+.achievement {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  color: var(--dark);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.progress-bar {
+  height: 10px;
+  background: var(--dark);
+  border-radius: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  width: 0%;
+  transition: width 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<button id="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
+
+<div class="achievement" id="achievement">
+  <div id="achievement-text">Досягнення розблоковано!</div>
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+</div>
+
+<h2>🎮 Інтерактивна гра з програмування</h2>
+
+<div class="interactive-container">
+  <h3>🕰️ Історія програмування (Інтерактивна шкала часу)</h3>
+  <p>Наведіть на подію, щоб побачити деталі:</p>
+  <div class="timeline">
+    <div class="timeline-event" data-year="1800s" data-info="Перші механічні обчислювальні пристрої: Аналітична машина Беббіджа (1837)"></div>
+    <div class="timeline-event" data-year="1950s" data-info="Fortran (1957) - перша мова високого рівня. Lisp (1958) - основа функціонального програмування"></div>
+    <div class="timeline-event" data-year="1980s" data-info="C++ (1985), Perl (1987), HTML (1989). Розквіт персональних комп'ютерів"></div>
+    <div class="timeline-event" data-year="2000s" data-info="Python набуває популярності, JavaScript стає потужним, з'являється GitHub (2008)"></div>
+    <div class="timeline-event" data-year="2020s" data-info="AI (ChatGPT), WebAssembly, квантові комп'ютери, метавсесвіт"></div>
+  </div>
+  <button onclick="showRandomFact()">Цікавий факт</button>
+</div>
+
+<div class="interactive-container">
+  <h3>💻 Виконання JavaScript коду</h3>
+  <p>Спробуйте ввести код та натисніть "Виконати":</p>
+  <div class="code-block">
+    <textarea id="js-code" style="width: 98%; height: 100px; background: #333; color: #abb2bf; border: none; padding: 10px; border-radius: 5px; font-family: monospace;">// Спробуйте змінити цей код
+for (let i = 1; i <= 3; i++) {
+  console.log(`Привіт з JavaScript! #${i}`);
+}</textarea>
+  </div>
+  <button onclick="runJavaScriptCode()">Виконати</button>
+  <button class="secondary" onclick="showExample()">Приклад</button>
+  <div id="js-output" class="output-area">Тут з'явиться результат...</div>
+</div>
+
+<div class="interactive-container">
+  <h3>🌈 Генератор кольорів</h3>
+  <p>Створіть власну кольорову палітру:</p>
+  <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <input type="color" id="color1" value="#FF6B6B">
+    <input type="color" id="color2" value="#4ECDC4">
+    <input type="color" id="color3" value="#FFE66D">
+  </div>
+  <button onclick="generatePalette()">Згенерувати палітру</button>
+  <button class="secondary" onclick="applyPalette()">Застосувати</button>
+  <div id="palette-preview" style="display: flex; height: 50px; margin-top: 15px; border-radius: 8px; overflow: hidden;">
+    <div style="flex: 1; background: #FF6B6B;"></div>
+    <div style="flex: 1; background: #4ECDC4;"></div>
+    <div style="flex: 1; background: #FFE66D;"></div>
+  </div>
+</div>
+
+<script>
+function toggleTheme() {
+  document.body.classList.toggle('light-theme');
+  if (document.body.classList.contains('light-theme')) {
+    document.documentElement.style.setProperty('--dark', '#F7FFF7');
+    document.documentElement.style.setProperty('--light', '#292F36');
+  } else {
+    document.documentElement.style.setProperty('--dark', '#292F36');
+    document.documentElement.style.setProperty('--light', '#F7FFF7');
+  }
+}
+
+function runJavaScriptCode() {
+  const code = document.getElementById('js-code').value;
+  const output = document.getElementById('js-output');
+  output.innerHTML = '';
+  
+  // Зберігаємо оригінальний console.log
+  const originalConsoleLog = console.log;
+  
+  // Перевизначаємо console.log для виводу в наш інтерфейс
+  console.log = function(...args) {
+    originalConsoleLog.apply(console, args); // Виводимо в консоль браузера
+    const line = args.map(arg => 
+      typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+    ).join(' ');
+    output.innerHTML += line + '\n';
+  };
+  
+  try {
+    const result = eval(code);
+    if (result !== undefined) {
+      output.innerHTML += 'Результат: ' + JSON.stringify(result);
+    }
+    showAchievement("Код успішно виконано! 💻");
+    updateProgress(20);
+  } catch (error) {
+    output.innerHTML = `Помилка: ${error.message}`;
+  }
+  
+  // Відновлюємо оригінальний console.log
+  console.log = originalConsoleLog;
+}
+
+function showExample() {
+  const examples = [
+    `// Генератор випадкових чисел\nconst random = Math.floor(Math.random() * 100);\nconsole.log('Випадкове число:', random);`,
+    `// Масив та метод map\nconst numbers = [1, 2, 3];\nconst squares = numbers.map(x => x * x);\nconsole.log('Квадрати:', squares);`,
+    `// Функція та умови\nfunction checkAge(age) {\n  return age >= 18 ? 'Доступ дозволено' : 'Доступ заборонено';\n}\nconsole.log(checkAge(20));`
+  ];
+  const randomExample = examples[Math.floor(Math.random() * examples.length)];
+  document.getElementById('js-code').value = randomExample;
+}
+
+function showRandomFact() {
+  const facts = [
+    "Перший 'баг' був справжнім комахою - молі, яка застрягла в реле комп'ютера у 1947 році.",
+    "Мова програмування Python названа не на честь змії, а на честь комедійного шоу 'Літаючий цирк Монті Пайтона'.",
+    "Перший програміст у світі була жінкою - Ада Лавлейс, яка писала програми для аналітичної машини Беббіджа.",
+    "Код на JavaScript виконується в середньому в 10 разів швидше, ніж 10 років тому.",
+    "Найпопулярніша мова програмування останніх років - JavaScript, Python та Java."
+  ];
+  alert(facts[Math.floor(Math.random() * facts.length)]);
+}
+
+function generatePalette() {
+  const colors = [];
+  for (let i = 0; i < 3; i++) {
+    colors.push('#' + Math.floor(Math.random()*16777215).toString(16));
+  }
+  document.getElementById('color1').value = colors[0];
+  document.getElementById('color2').value = colors[1];
+  document.getElementById('color3').value = colors[2];
+  updatePalettePreview();
+}
+
+function applyPalette() {
+  const color1 = document.getElementById('color1').value;
+  const color2 = document.getElementById('color2').value;
+  const color3 = document.getElementById('color3').value;
+  
+  document.documentElement.style.setProperty('--primary', color1);
+  document.documentElement.style.setProperty('--secondary', color2);
+  document.documentElement.style.setProperty('--accent', color3);
+  
+  showAchievement("Палітру застосовано! 🎨");
+  updateProgress(15);
+}
+
+function updatePalettePreview() {
+  const palette = document.getElementById('palette-preview');
+  const colors = palette.children;
+  colors[0].style.background = document.getElementById('color1').value;
+  colors[1].style.background = document.getElementById('color2').value;
+  colors[2].style.background = document.getElementById('color3').value;
+}
+
+function showAchievement(text) {
+  const achievement = document.getElementById('achievement');
+  document.getElementById('achievement-text').textContent = text;
+  achievement.style.display = 'block';
+  setTimeout(() => {
+    achievement.style.animation = 'slideIn 0.5s reverse forwards';
+    setTimeout(() => achievement.style.display = 'none', 500);
+  }, 3000);
+}
+
+let progress = 0;
+function updateProgress(value) {
+  progress = Math.min(progress + value, 100);
+  document.getElementById('progress').style.width = progress + '%';
+  if (progress === 100) {
+    showAchievement("Ви досягли 100%! 🏆");
+    progress = 0;
+    setTimeout(() => document.getElementById('progress').style.width = '0%', 1000);
+  }
+}
+
+// Ініціалізація
+document.querySelectorAll('input[type="color"]').forEach(input => {
+  input.addEventListener('input', updatePalettePreview);
+});
+updatePalettePreview();
+</script>
+</body>
+</html>

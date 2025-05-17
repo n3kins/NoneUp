@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoneUp — Learn & Listen</title>
+    <link rel="icon" href="logo.webp" type="image/png">
+    <link rel="stylesheet" href="styleprogramming.css">
+    <style>
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #222;
+            border: 1px solid #333;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            z-index: 20;
+            display: none;
+        }
+
+        .autocomplete-list li {
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .autocomplete-list li:hover {
+            background: #333;
+        }
+
+        .h4 {
+            color: #0071e3;
+        }
+        
+    /* Стилі для AI секції */
+    .ai-section {
+        padding: 50px 20px;
+        text-align: center;
+        background-color: #282828; /* Трохи темніший фон */
+        color: #eee;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .ai-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 40px;
+        background-color: #000000;
+        border-radius: 15px;
+        padding: 30px;
+    }
+
+    @media (min-width: 768px) {
+        .ai-hero {
+            flex-direction: row;
+            justify-content: space-between;
+            text-align: left;
+        }
+    }
+
+    .ai-hero-text {
+        max-width: 600px;
+        margin-bottom: 30px;
+    }
+
+    @media (min-width: 768px) {
+        .ai-hero-text {
+            margin-bottom: 0;
+        }
+    }
+
+    .ai-hero-text h1 {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        color: #0071e3;
+    }
+
+    .ai-hero-text .subtitle {
+        font-size: 1.2em;
+        color: #ccc;
+        margin-bottom: 20px;
+    }
+
+    .ai-hero-text .description {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .ai-hero-image {
+        max-width: 400px;
+    }
+
+    .ai-hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+    }
+
+    /* Стилі для розділу з порадами */
+    .ai-tips-section {
+        margin-top: 40px;
+        padding: 30px 20px;
+        background-color: #1e1e1e;
+        border-radius: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="sidebar">
+            <div class="logo">NoneUp</div>
+            <ul class="menu">
+                <li class="active" data-section="home"><i class="icon">🏠</i> Home</li>
+                <li data-section="podcasts"><i class="icon">🎙️</i> Podcasts</li>
+                <li data-section="music"><i class="icon">🎶</i> Music</li>
+                <li data-section="books"><i class="icon">📚</i> Books</li>
+                <li data-section="languages"><i class="icon">💻</i> Languages</li>
+                <li data-section="interactive"><i class="icon">✨</i> Interactive</li>
+                <li data-section="artificialintelligence"><i class="icon">👾</i> Artificial Intelligence</li>
+            </ul>
+        </div>
+
+        <div class="main">
+            <div class="top-bar">
+                <div style="position: relative; width: 100%;">
+                    <input type="text" placeholder="Search..." class="search">
+                    <ul class="autocomplete-list" id="autocompleteList"></ul>
+                </div>
+            </div>
+
+            <div class="section home-section" id="homeSection">
+                <div class="home-hero">
+                    <div class="hero-text">
+                        <h1>Відкрий світ програмування з NoneUp</h1>
+                        <p class="subtitle">Слухай. Вчися. Кодуй під улюблену музику.</p>
+                        <p class="description">
+                            NoneUp — це ваш інтерактивний путівник у захопливий світ програмування. Ми поєднуємо якісний навчальний контент з надихаючою музикою, подкастами, добіркою книг та інтерактивними прикладами, щоб зробити ваш шлях до майстерності кодування легким, цікавим та ефективним.
+                        </p>
+                    </div>
+                    <div class="hero-image">
+                        <img src="noneup1.jpeg" alt="Ілюстрація програмування та музики">
+                    </div>
+                </div>
+
+                <div class="home-features-grid">
+                    <div class="feature-card">
+                        <i class="icon">🎙️</i>
+                        <h3>Подкасти для натхнення</h3>
+                        <p>Надихайтеся історіями успіху та експертними думками від провідних розробників.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="icon">🎶</i>
+                        <h3>Музика для продуктивності</h3>
+                        <p>Знайдіть ідеальний саундтрек для вашої подорожі у програмуванні.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="icon">📚</i>
+                        <h3>Рекомендовані книги для розвитку</h3>
+                        <p>Знайдіть найкращі книги, які допоможуть вам поглибити свої знання та навички.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="icon">💻</i>
+                        <h3>Вивчення популярних мов</h3>
+                        <p>Ознайомтеся з HTML, CSS, JavaScript, Python та іншими затребуваними мовами програмування.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="icon">✨</i>
+                        <h3>Інтерактивна практика</h3>
+                        <p>Закріплюйте свої знання за допомогою інтерактивних прикладів та практичних завдань.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="icon">👾</i>
+                        <h3>Штучний Інтелект</h3>
+                        <p>Дізнайтесь, як працює штучний інтелект, та де його використовують у реальному житті й програмуванні.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section hidden" id="podcastsSection">
+                <h2>Dev Podcasts</h2>
+                <div class="h4">
+                    <h4>Підкасти українських програмістів</h4>
+                </div>
+                <div class="cards" id="podcastsCards"></div>
+            </div>
+
+            <div class="section hidden" id="musicSection">
+                <h2>Music for Coding</h2>
+                <div class="h4">
+                    <h4>Relax music</h4>
+                </div>
+                <div class="cards" id="musicCards"></div>
+            </div>
+
+            <div class="section hidden" id="booksSection">
+                <h2>Code Books</h2>
+                <div class="h4">
+                    <h4>Книжки про мови</h4>
+                </div>
+                <div class="cards">
+                    <div class="card" id="languageBookCard">
+                        <h3>Book Language</h3>
+                        <p>Learn about programming languages</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section hidden" id="languagesSection">
+                <h2>Programming Languages</h2>
+                <div class="h4">
+                    <h4>Популярні мови</h4>
+                </div>
+                <div class="cards" id="languageCards"></div>
+            </div>
+
+            <div class="section hidden" id="interactiveSection">
+                <h2>Interactive Examples</h2>
+                <div class="h4">
+                    <h4>Інтерактивні HTML ігри</h4>
+                </div>
+                <div class="cards">
+                    <div class="card" id="interactiveHTMLCard">
+                        <h3>HTML Example</h3>
+                        <p>View interactive HTML content</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section ai-section" id="artificialintelligenceSection">
+                <div class="ai-hero">
+                    <div class="ai-hero-text">
+                        <h1>Штучний Інтелект - Майбутнє Вже Тут</h1>
+                        <p class="subtitle">Досліджуйте світ AI разом з NoneUp</p>
+                        <p class="description">
+                            Штучний інтелект революціонізує наш світ. Від машинного навчання до нейронних мереж - 
+                            ми надаємо вам всі необхідні знання, щоб зрозуміти та використовувати цю потужну технологію. 
+                            Дізнайтеся, як AI впливає на медицину, бізнес, мистецтво та повсякденне життя.
+                        </p>
+                    </div>
+                    <div class="ai-hero-image">
+                        <img src="noneup2.jpg" alt="Штучний інтелект та технології майбутнього">
+                    </div>
+                </div>
+
+                <h2>Основні напрямки AI</h2>
+                <div class="h4">
+                    <h4>Досліджуйте ключові галузі штучного інтелекту</h4>
+                </div>
+                <div class="cards" id="aiCards"></div>
+            </div>
+
+            <div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+            <div class="modal" id="modal" style="display: none;">
+                <button class="close-btn" id="closeBtn">×</button>
+                <h2 id="modalTitle"></h2>
+                <div id="modalText" style="max-height: 70vh; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+    <script src="scriptprogramming.js"></script>
+</body>
+</html>
