@@ -1,65 +1,106 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoneUp</title>
-  <link rel="icon" href="logo.webp" type="image/png">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./logo-192x192.png">
+    <link rel="icon" href="logo.jpg" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <title>NoneUp</title>
 </head>
 <body>
-  <header>
-    <div class="logo">NoneUp</div>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="#section1">Вітання</a></li>
-        <li><a href="#section2">Основне</a></li>
-        <li><a href="#section3">Відгук</a></li>
-        <li><a href="#Контакти">Контакти</a></li>
-      </ul>
-      <div class="burger">
-        <div class="line1"></div>
-        <div class="line2"></div>
-        <div class="line3"></div>
-      </div>
-    </nav>
-  </header>
 
-  <main>
-    <section id="section1" class="left">
-      <div class="content typing" style="text-align: left; max-width: 800px;">
-        <h2>Вітаємо вас на нашому сайті! 👋</h2>
-        <p class="typed-text">Ласкаво просимо на сайт, присвячений захопливому світу програмування та кібербезпеки! Тут ви знайдете корисні матеріали, навчальні посібники, актуальні новини та практичні поради для розробників та фахівців з безпеки.</p>
-              <a href="programming.html" class="feedback-btn">До навчання</a>
-      </div>
-    </section>
-
-    <section id="section2" class="right">
-      <div class="content typing" style="text-align: right; max-width: 800px;">
-        <h2>Твій Гід у Світ Програмування та Безпеки ⚙️</h2>
-        <p class="typed-text">Цінуєте свій час та прагнете легко знаходити потрібну інформацію про програмування та кібербезпеку? Цей сайт стане вашим зручним путівником у світі цифрових технологій. Ми зібрали корисні матеріали, пояснення та поради, щоб полегшити ваш процес навчання та роботи, не замінюючи при цьому вашої власної активності та зусиль.</p>
-      </div>
-    </section>
-    
-    <section id="section3" class="left">
-      <div class="content typing" style="text-align: left; max-width: 800px;">
-        <h2>Залишити відгук! 📝</h2>
-        <p class="typed-text">Напишіть нам, якщо у вас є запитання або пропозиції. Ми цінуємо ваші відгуки та прагнемо покращувати наш сайт!</p>
-        <a href="https://forms.gle/A8wbvcxxYUhmth5u5" class="feedback-btn">Відправити відгук</a>
-      </div>
-    </section>
-    
-  </main>
-
-  <button id="scrollTopBtn" title="Вгору">&#8679;</button>
-
-  <footer>
-    <div id="Контакти" class="footer-content">
-      <p>📧 Пошта: <a href="mailto:noneupkiber@gmail.com">noneupkiber@gmail.com</a></p>
-      <p>📝 Маєш ідеї? <a href="#section3">Залишити відгук</a></p>
+    <div id="topButtons">
+        <button id="installButton" class="top-btn" title="Встановити">⏏</button>
+        <button id="rulesBtn" class="top-btn" data-lang-key="rulesButton">Правила</button>
+        <button id="settingsBtn" class="top-btn" title="Налаштування"><span aria-hidden="true">⚙︎</span></button>
+        <button id="playPauseBtnTop" class="top-btn" title="Продовжити/Пауза"><span aria-hidden="true"></span></button>
+        
+        <div id="installModalOverlay" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" id="closeInstallModalBtn" aria-label="Закрити">&times;</button>
+                <h2 data-lang-key="installModalTitle">Встановити додаток</h2>
+                <p data-lang-key="installModalDescription"></p> 
+                <div class="modal-actions">
+                    <button id="pwaInstallBtn" class="btn" style="display: none;" data-lang-key="installButtonText">Встановити</button>
+                    <p id="installMessage" style="margin-top: 0;"></p> 
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <script src="script.js"></script>
+    <h1 data-lang-key="gameTitle">2048 NoneUp</h1>
+    <div class="info"><span data-lang-key="scoreLabel">Очки</span>: <span id="score">0</span> | <span data-lang-key="bestLabel">Рекорд</span>: <span id="best">0</span></div>
+    
+    <div class="grid-container">
+        <div class="grid" id="grid"></div>
+    </div>
+    
+    <button class="btn" id="start" data-lang-key="startButton">
+        <span class="btn-text">Грати</span>
+        <span class="play-line"></span>
+    </button>
+
+    <div id="pauseOverlay" class="pause-overlay">
+        <div class="pause-content">
+            <h2 data-lang-key="pauseTitle">Гра на паузі</h2>
+            <p data-lang-key="pauseDescription">Натисніть кнопку "Продовжити" або клавішу пробілу</p>
+            <button id="continueBtn" class="btn" style="margin-top: 15px;" data-lang-key="continueButton">Продовжити</button>
+        </div>
+    </div>
+
+    <div id="rulesModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+        <div class="modal">
+            <button class="close-btn" aria-label="Закрити">&times;</button>
+            <h2 id="rulesTitle" data-lang-key="rulesTitle">Правила гри 2048</h2>
+            <p><strong data-lang-key="pcLabel">На ПК:</strong> <span data-lang-key="pcControls">керуй грою за допомогою стрілок: ← ↑ → ↓ або WASD.</span></p>
+            <p><strong data-lang-key="phoneLabel">На телефоні:</strong> <span data-lang-key="phoneControls">керуй грою свайпами вгору, вниз, вліво та вправо.</span></p>
+            <p><span data-lang-key="gameGoal">З'єднуй однакові числа, щоб отримати 2048!</span></p>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal">
+            <button class="close-btn" aria-label="Закрити">&times;</button>
+            <h2 id="settingsTitle" data-lang-key="settingsTitle">Налаштування</h2>
+            <button id="controlsBtn" class="btn" style="margin-top: 15px;" data-lang-key="controlsButton">Управління</button>
+            <div class="setting-options" style="margin-top: 20px;"> <div style="position: relative; margin-bottom: 15px;">
+                    <button id="langBtn" class="btn" data-lang-key="languageButton">Мова ▼</button>
+                    <div id="langPopup" class="mini-popup" role="listbox" aria-label="Вибір мови">
+                        <button data-lang="zh">中文 (Китайська)</button>
+                        <button data-lang="uk">Українська</button>
+                        <button data-lang="ja">日本語 (Японська)</button>
+                        <button data-lang="en">English</button>
+                    </div>
+                </div>
+                <div style="position: relative;">
+                    <button id="themeBtn" class="btn" data-lang-key="themeButton">Тема ▼</button>
+                    <div id="themePopup" class="mini-popup" role="listbox" aria-label="Вибір теми">
+                        <button data-theme="dark" data-lang-key="darkTheme">Темна тема</button>
+                        <button data-theme="light" data-lang-key="lightTheme">Світла тема</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="controlsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="controlsTitle">
+        <div class="modal">
+            <button id="controlsBackBtn" aria-label="Повернутися">←</button>
+            <h2 id="controlsTitle" data-lang-key="controlsTitle">Управління</h2>
+            <p><strong data-lang-key="pcLabel">ПК:</strong></p>
+            <ul>
+                <li><span data-lang-key="arrows">Стрілки: ← ↑ → ↓</span></li>
+                <li>WASD: <span data-lang-key="wasdControls">альтернативне управління</span></li>
+                <li><span data-lang-key="spacePause">Пробіл: пауза</span></li>
+            </ul>
+            <p><strong data-lang-key="phoneLabel">Телефон:</strong></p>
+            <ul>
+                <li><span data-lang-key="swipes">Свайпи вгору, вниз, вліво, вправо</span></li>
+            </ul>
+        </div>
+    </div>
+<script src="script.js"></script>
 </body>
 </html>
